@@ -27,9 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+# User model
+AUTH_USER_MODEL = 'core.User'
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'board.apps.BoardConfig'
+    'board.apps.BoardConfig',
+    'core.apps.CoreConfig'
 ]
 
 MIDDLEWARE = [
