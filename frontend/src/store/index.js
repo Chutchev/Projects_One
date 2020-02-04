@@ -8,38 +8,50 @@ const api = axios.create({
   baseURL: "http://localhost:8000/api/"
 });
 
+const LOADING = "LOADING";
+const AUTH_SUCCESS = "AUTH_SUCCESS";
+
 export default new Vuex.Store({
   state: {
-    token: "",
+    token: localStorage.getItem("token") || "",
     isLoading: false,
-    user: {}
+    user: ''
   },
   mutations: {
-    loading: (state, value) => {
-      console.log(`isLoading: ${value}`);
+    [LOADING]: (state, value) => {
+      console.log(`[LOADING]: ${value}`);
       state.isLoading = value;
+    },
+    [AUTH_SUCCESS]: (state, value) => {
+      console.log(`[AUTH_SUCCESS]: ${value}`);
+      state.token = value;
     }
   },
   actions: {
-    async login({ state, commit }, payload) {
-      commit("loading", true);
-      let response = await api.post("/board/auth/", payload);
-      commit("loading", false);
-      const token = response.data.token;
+    async login({ state, commit, dispatch }, payload) {
+      commit(LOADING, true);
+      const resp = await api.post("/board/auth/", payload);
+      const token = resp.data.token;
       localStorage.setItem("token", token);
+      commit(LOADING, false);
+      commit(AUTH_SUCCESS, token);
+      dispatch("getUser");
       router.push("/");
-      return state;
     },
     async getUser({ state, commit }) {
+      commit(LOADING, true);
       const token = localStorage.getItem("token");
-      commit("loading", true);
-      let response = await api.get("/me", {
-        headers: {
-          Authorization: `Token ${token}`
-        }
-      });
-      commit("loading", false);
-      state.user = { ...response.data };
+      if (token) {
+        let response = await api.get("/me", {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        });
+        commit(LOADING, false);
+        state.user = { ...response.data };
+      } else {
+        router.push("/login");
+      }
     }
   },
   modules: {}
