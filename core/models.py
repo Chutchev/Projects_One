@@ -11,7 +11,7 @@ class User(AbstractUser):
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True)
 
-
+    
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def generate_token(sender, instance, created, **kwargs):
     if created:

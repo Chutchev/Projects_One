@@ -9,13 +9,13 @@
             <v-btn text v-on="on">{{ user.username }}</v-btn>
           </template>
           <v-list>
-            <v-list-item v-for="item in items" :key="item.key" to="/settings">
+            <v-list-item v-for="(item, index) in items" :key="index" :to="item.link" link>
               <v-list-item-title>{{ item.key }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
       </div>
-      <v-btn outlined flat v-else>Войти</v-btn>
+      <v-btn outlined text v-else>Войти</v-btn>
     </v-app-bar>
     <v-content>
       <router-view />
@@ -29,7 +29,7 @@ import { mapState, mapActions } from "vuex";
 export default {
   name: "App",
   data: () => ({
-    items: [{ key: "Настройки" }, { key: "Выход" }]
+    items: [{ key: "Настройки", link: '/settings' }, { key: "Выход", link: '/logout' }]
   }),
   computed: {
     ...mapState(["user", "isLoading"])
