@@ -15,7 +15,7 @@ export default new Vuex.Store({
   state: {
     token: localStorage.getItem("token") || "",
     isLoading: false,
-    user: ''
+    user: {}
   },
   mutations: {
     [LOADING]: (state, value) => {
@@ -49,6 +49,21 @@ export default new Vuex.Store({
         });
         commit(LOADING, false);
         state.user = { ...response.data };
+      } else {
+        router.push("/login");
+      }
+    },
+    async updateUser({ state, commit, dispatch }, payload) {
+      commit(LOADING, true);
+      const token = localStorage.getItem("token");
+      if (token) {
+        await api.put("/me/", payload, {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        });
+        dispatch("getUser");
+        commit(LOADING, false);
       } else {
         router.push("/login");
       }
